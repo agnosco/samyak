@@ -1,30 +1,40 @@
 import {Injectable} from '@angular/core';
 import {ICustomer} from './customer';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class CustomerService {
-  getCustomers(): ICustomer[] {
-    return [
-      {
-        'customerId': 2,
-        'customerName': 'Garden Cart',
-        'customerCode': 'GDN-0023',
-        'releaseDate': 'March 18, 2016',
-        'description': '15 gallon capacity rolling garden cart',
-        'price': 32.99,
-        'starRating': 2,
-        'imageUrl': 'http://openclipart.org/image/300px/svg_to_png/58471/garden_cart.png'
-      },
-      {
-        'customerId': 5,
-        'customerName': 'Hammer',
-        'customerCode': 'TBX-0048',
-        'releaseDate': 'May 21, 2016',
-        'description': 'Curved claw steel hammer',
-        'price': 8.9,
-        'starRating': 3,
-        'imageUrl': 'http://openclipart.org/image/300px/svg_to_png/73/rejon_Hammer.png'
-      }
-    ];
+
+  private _customersUrl = './api/customers.json';
+  // api_url = 'http://localhost:3000';
+  // private _customersUrl = `${this.api_url}/api/customers`;
+
+  constructor(private _http: HttpClient) {
+  }
+
+  getCustomers(): Observable<ICustomer[]> {
+    return this._http.get<ICustomer[]>(this._customersUrl)
+    .do(data => console.log('All: ', JSON.stringify(data)))
+      .catch(this.handleError);
+  }
+
+  // getCustomers(): Observable<ICustomer[]> {
+  //   return this._http.get(this._customersUrl)
+  //     .do(data => console.log('All: ', JSON.stringify(data)))
+  //     .catch(this.handleError);
+  // }
+
+  // addCustomers(item): Observable<ICustomer[]> {
+  //   return this._http.post('/api/addCustomer', {
+  //     customer: item
+  //   });
+  // }
+  private handleError(err: HttpErrorResponse) {
+    console.log('here is ther error', err.message);
+    return Observable.throw(err.message);
   }
 }

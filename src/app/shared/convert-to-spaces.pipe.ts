@@ -10,3 +10,4 @@ export class ConvertToSpacesPipe implements PipeTransform{
       return stringToTranform.replace(characterToReplace, ' ');
   }
 }
+

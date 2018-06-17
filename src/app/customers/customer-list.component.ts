@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {CustomerService} from './customer.service';
 
 @Component({
-  selector: 'app-customer',
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css']
 })
@@ -15,7 +14,7 @@ export class CustomerListComponent implements OnInit {
   _customerFilter;
   filteredCustomers;
   customers;
-  // private _customerService;
+  errorMessage;
 
   get customerFilter() {
     return this._customerFilter;
@@ -27,7 +26,6 @@ export class CustomerListComponent implements OnInit {
   }
 
   constructor(private _customerService: CustomerService) {
-   // this. _customerService = customerService;
   }
 
   onRatingClicked(message): void {
@@ -45,8 +43,12 @@ export class CustomerListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.customers = this._customerService.getCustomers();
-    this.filteredCustomers = this.customers
+    this.customers = this._customerService.getCustomers()
+      .subscribe(customers => {
+          this.customers = customers;
+          this.filteredCustomers = this.customers;
+        },
+        error => this.errorMessage = <any> error);
     this.customerFilter = '';
   }
 
